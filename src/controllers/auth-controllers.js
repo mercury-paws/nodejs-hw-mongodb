@@ -19,6 +19,7 @@ import { TEMPLATES_DIR } from '../constants/path.js';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import path from 'node:path';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
 const app_domain = env('APP_DOMAIN', 'http://localhost:3000');
 const jwt_secret = env('JWT_SECRET');
@@ -68,7 +69,7 @@ export const signupController = async (req, res) => {
   //   subject: 'Verify Email',
   //   to: email,
   //   html,
-    //`<a target="_blank" href="${app_domain}/auth/verify?token=${token}">Click to verify your email</a>`,
+  //`<a target="_blank" href="${app_domain}/auth/verify?token=${token}">Click to verify your email</a>`,
   // };
 
   // await sendEmailtoConfirm(verifyEmail);
@@ -113,9 +114,9 @@ export const signinController = async (req, res) => {
     throw createHttpError(404, 'Email not found');
   }
 
-  if (!user.verify) {
-    throw createHttpError(401, 'Email not verified');
-  }
+  // if (!user.verify) {
+  //   throw createHttpError(401, 'Email not verified');
+  // }
 
   const passwordCompare = await compareHash(password, user.password);
   if (!passwordCompare) {

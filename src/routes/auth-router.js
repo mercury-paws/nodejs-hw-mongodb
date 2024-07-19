@@ -17,6 +17,8 @@ import {
   requestResetEmailController,
 } from '../controllers/auth-controllers.js';
 
+// http://localhost:3000/auth/confirm-google-oauth
+
 const authRouter = Router();
 authRouter.post(
   '/register',
