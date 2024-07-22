@@ -48,3 +48,7 @@ export const resetPasswordSchema = Joi.object({
   }),
   token: Joi.string().required(),
 });
+
+export const userGoodleAuthCodeSchema = Joi.object({
+  code: Joi.string().required(),
+});

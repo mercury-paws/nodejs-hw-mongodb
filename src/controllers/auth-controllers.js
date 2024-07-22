@@ -20,6 +20,11 @@ import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
+import {
+  validateGoogleOAuthCode,
+  getGoogleOAuthName,
+} from '../utils/googleOAuth2.js';
+import { randomBytes } from 'node:crypto';
 
 const app_domain = env('APP_DOMAIN', 'http://localhost:3000');
 const jwt_secret = env('JWT_SECRET');
@@ -250,4 +255,45 @@ export const verifyResetPasswordController = async (req, res) => {
   } catch (error) {
     throw createHttpError(401, error.message);
   }
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Google OAuth url generated successfully',
+    data: {
+      url,
+    },
+  });
+};
+
+export const authGoogleController = async (req, res) => {
+  const { code } = req.body;
+  const ticket = await validateGoogleOAuthCode(code);
+  const userPayload = ticket.getPayload();
+  if (!userPayload) {
+    throw createHttpError(401);
+  }
+
+  let user = await findUser({ email: userPayload.email });
+  if (!user) {
+    const signupData = {
+      email: userPayload.email,
+      password: randomBytes(10),
+      name: getGoogleOAuthName(userPayload),
+    };
+    user = await signup(signupData);
+  }
+  const session = await createSession(user._id);
+
+  setupResponseSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 };

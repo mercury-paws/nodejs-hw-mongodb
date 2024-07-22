@@ -6,6 +6,7 @@ import {
   userSignupSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
+  userGoodleAuthCodeSchema,
 } from '../validation/user-schema.js';
 import {
   signupController,
@@ -15,6 +16,8 @@ import {
   verifyController,
   verifyResetPasswordController,
   requestResetEmailController,
+  getGoogleOAuthUrlController,
+  authGoogleController,
 } from '../controllers/auth-controllers.js';
 
 // http://localhost:3000/auth/confirm-google-oauth
@@ -47,6 +50,14 @@ authRouter.post(
   '/send-reset-email',
   validateBody(requestResetEmailSchema),
   ctrlWrapper(requestResetEmailController),
+);
+
+authRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+authRouter.post(
+  '/confirm-google-auth',
+  validateBody(userGoodleAuthCodeSchema),
+  ctrlWrapper(authGoogleController),
 );
 
 export default authRouter;
