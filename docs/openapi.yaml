@@ -14,7 +14,7 @@ tags:
     description: Auth operations
 servers:
   - url: <http://localhost:3000>
-  - url: https://dashboard.render.com/web/srv-cpoqf92ju9rs738u9hfg/deploys/dep-cqd0tsjv2p9s73e56i70
+  # - url: https://dashboard.render.com/web/srv-cpoqf92ju9rs738u9hfg/deploys/dep-cqd0tsjv2p9s73e56i70
 paths:
   /contacts:
     get:
